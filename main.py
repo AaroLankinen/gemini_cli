@@ -1,15 +1,25 @@
 import os
+import argparse
 from dotenv import load_dotenv
 from google import genai
+
 
 load_dotenv()
 api_key = os.environ.get("GEMINI_API_KEY")
 if not api_key:
     raise ValueError("GEMINI_API_KEY not found in environment variables.")
 
+# Initialize the Gemini client
 client = genai.Client(api_key=api_key)
+
+# Set up command-line argument parsing
+parser = argparse.ArgumentParser(description="Gemini CLI")
+parser.add_argument("user_prompt", type=str, help="The user prompt for content generation.")
+args = parser.parse_args()
+
+# Generate content using the specified model
 response = client.models.generate_content(
-    model='gemini-2.5-flash', contents="Why is Boot.dev such a great place to learn backend development? Use one paragraph maximum."
+    model='gemini-2.5-flash', contents=args.user_prompt
 )
 if response.usage_metadata is not None:
     print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
