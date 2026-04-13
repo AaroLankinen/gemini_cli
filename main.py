@@ -18,6 +18,7 @@ client = genai.Client(api_key=api_key)
 # Set up command-line argument parsing
 parser = argparse.ArgumentParser(description="Gemini CLI")
 parser.add_argument("user_prompt", type=str, help="The user prompt for content generation.")
+parser.add_argument("--verbose", action="store_true", help="Enable verbose output")
 args = parser.parse_args()
 
 # Create content request with the user prompt
@@ -28,9 +29,11 @@ response = client.models.generate_content(
     model='gemini-2.5-flash', contents=messages
 )
 if response.usage_metadata is not None:
-    print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
-    print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
-    print(f"Total tokens: {response.usage_metadata.total_token_count}")
+    if args.verbose:
+        print(f"User prompt: {args.user_prompt}")
+        print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
+        print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
+        print(f"Total tokens: {response.usage_metadata.total_token_count}")
     print("Response:", response.text)
 else:
     raise RuntimeError("Usage metadata not found in response, likely failed API call.")
