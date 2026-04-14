@@ -3,11 +3,14 @@ import argparse
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
+
 from functions.run_python_file import run_python_file
 from functions.write_file import write_file
 from functions.get_file_content import get_file_content
 from functions.get_files_info import get_files_info
+
 from prompts import system_prompt
+from functions.call_function import available_functions
 
 
 
@@ -35,6 +38,7 @@ response = client.models.generate_content(
     contents=messages,
     config=types.GenerateContentConfig(
         system_instruction=system_prompt,
+        tools=[available_functions],
         max_output_tokens=2048,
     )
 )
@@ -44,6 +48,10 @@ if response.usage_metadata is not None:
         print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
         print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
         print(f"Total tokens: {response.usage_metadata.total_token_count}")
-    print("Response:", response.text)
+    if response.function_calls:
+        for function_call in response.function_calls:
+            print(f"Calling function: {function_call.name}({function_call.args})")
+    else:
+        print("Response:", response.text)
 else:
     raise RuntimeError("Usage metadata not found in response, likely failed API call.")
