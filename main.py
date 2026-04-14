@@ -3,6 +3,11 @@ import argparse
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
+from functions.run_python_file import run_python_file
+from functions.write_file import write_file
+from functions.get_file_content import get_file_content
+from functions.get_files_info import get_files_info
+from prompts import system_prompt
 
 
 
@@ -26,7 +31,12 @@ messages = [types.Content(role="user", parts=[types.Part(text=args.user_prompt)]
 
 # Generate content using the specified model
 response = client.models.generate_content(
-    model='gemini-2.5-flash', contents=messages
+    model='gemini-2.5-flash', 
+    contents=messages,
+    config=types.GenerateContentConfig(
+        system_instruction=system_prompt,
+        max_output_tokens=2048,
+    )
 )
 if response.usage_metadata is not None:
     if args.verbose:
