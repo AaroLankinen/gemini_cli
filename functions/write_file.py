@@ -4,6 +4,11 @@ from config import MAX_CHARS
 
 
 
+'''
+Writes the provided content to a file at the specified path.
+Automatically creates parent directories if they do not exist.
+Ensures the write operation stays within the permitted working directory.
+'''
 def write_file(working_directory, file_path, content):
     try:
         if not os.path.isdir(working_directory):

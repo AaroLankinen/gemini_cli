@@ -4,6 +4,10 @@ from config import MAX_CHARS
 
 
 
+'''
+Executes a Python (.py) file using the python3 interpreter.
+Returns the STDOUT and STDERR of the process, truncated to MAX_CHARS if necessary.
+'''
 def run_python_file(working_directory, file_path, args=None):
     try:
         if not os.path.isdir(working_directory):

@@ -3,6 +3,11 @@ from config import MAX_CHARS
 
 
 
+'''
+Reads the content of a file within the permitted working directory.
+If the content exceeds MAX_CHARS, it is truncated and an informative message is appended.
+Returns the file content as a string or an error message if the path is invalid or outside bounds.
+'''
 def get_file_content(working_directory, file_path):
     try:
         if not os.path.isdir(working_directory):
